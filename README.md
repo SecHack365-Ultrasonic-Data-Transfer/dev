@@ -1,3 +1,5 @@
+![](https://github.com/2019-SecHack365-Group-C/document/blob/img/usAuthLogo_6.png)
+
 # what is this?
 
 **Ultrasonic-Authorization** とは不可聴音(超音波)を用いた認証システムです.  
