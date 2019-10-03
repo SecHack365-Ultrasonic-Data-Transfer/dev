@@ -1,4 +1,4 @@
-#メモ : これなに?
+#メモ : これなに? update--遅延が減った--
 #文字入れたらasciiコード化、16進化した上で音にして流すよ
 
 #参考 : https://fardog.io/blog/2013/02/16/making-noise-in-python/
@@ -10,13 +10,22 @@ import math
 import numpy
 import pyaudio
 
+#---
+import numpy
+from scipy.io import wavfile
+
 #音声出力関係
-freq_std = 1760
+#freq_std = 1760
 freq_math = {}
+
+#---
+freq_std = 440
 
 #文字→音声化のための変換関係
 sp_len = 0
 sp_in = {}
+
+#chunks = []
 
 #指定周波数でサイン波を生成する
 def sine(frequency, length, rate):
@@ -35,8 +44,9 @@ def play_tone(stream, frequency, length=1, rate=44100):
     chunks = []
     chunks.append(sine(int(frequency), length, rate))
     chunk = numpy.concatenate(chunks) * 0.25
-    stream.write(chunk.astype(numpy.float32).tostring())
-
+       
+    return chunk
+    
 #文字入れたらasciiコード
 def txt_to_asciicode(input):
     sp_len = len(input)
@@ -55,8 +65,14 @@ if __name__ == '__main__':
     
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
+    
+    chunks = []
     for i in list(out_txt) :
         print(i, int(i, 16))
-        play_tone(stream, str_to_sound(i))
+        chunks.append(play_tone(stream, str_to_sound(i)))
+
+    for chunk in chunks :
+        stream.write(chunk.astype(numpy.float32).tostring())
+    
     stream.close()
     p.terminate()

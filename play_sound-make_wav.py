@@ -21,12 +21,11 @@ freq_math = {}
 #---
 freq_std = 440
 
-
 #文字→音声化のための変換関係
 sp_len = 0
 sp_in = {}
 
-chunks = []
+#chunks = []
 
 #指定周波数でサイン波を生成する
 def sine(frequency, length, rate):
@@ -42,7 +41,7 @@ def str_to_sound(code):
 #オーディオ鳴らす
 def play_tone(stream, frequency, length=1, rate=44100):
     print(float(frequency), length, rate)
-    #chunks = []
+    chunks = []
     chunks.append(sine(int(frequency), length, rate))
     chunk = numpy.concatenate(chunks) * 0.25
     stream.write(chunk.astype(numpy.float32).tostring())
@@ -67,11 +66,13 @@ if __name__ == '__main__':
     
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
+
+    chunks = []
     for i in list(out_txt) :
         print(i, int(i, 16))
-        play_tone(stream, str_to_sound(i))
-    
-    chunk = numpy.concatenate(chunks) * 0.25
+        chunks.append(play_tone(stream, str_to_sound(i)))
+
+    chunk = numpy.concatenate(chunks)
     wavfile.write("hoge.wav", 44100, chunk)
 
     stream.close()
