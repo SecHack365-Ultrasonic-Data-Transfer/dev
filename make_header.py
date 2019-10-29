@@ -39,7 +39,6 @@ def make_ack_number(receive_ack: int, receive_data_length: int, before_ack: int)
         else :                                              #通常制御時(ack No.の更新)
             send_ack = int(receive_sequence) + int(receive_data_length)
             
-            print(send_ack, "---:",send_ack % (initial_max+1))
             return send_ack % (initial_max+1)
 
 # 前回送信時の確認応答(ack)No.
@@ -55,7 +54,6 @@ else :                      #2回目以降の通信
     receive_ack = int(sys.argv[2])
     receive_data_length = int(sys.argv[3])
 
-print(receive_ack, receive_sequence, receive_data_length)
 sequence_number = format(make_sequence_number(receive_sequence, 
                                                   receive_ack  ), 'b').zfill(32)
 ack_number = format(make_ack_number(receive_ack, 
