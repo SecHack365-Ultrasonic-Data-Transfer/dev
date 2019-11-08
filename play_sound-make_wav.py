@@ -53,8 +53,34 @@ def txt_to_asciicode(input):
     sp_len = len(input)
     sp_in = list(input)  #input -> 1文字ずつ
     sp_out = ""
+    vertical_checkbit_str = '0'
+    ascii_out = []
     for i in range(sp_len) :
+        ascii_out.append(hex(ord(sp_in[i])))
         sp_out += str(hex(ord(sp_in[i])))[2:4] #ascii化→16進化→文字列化
+    
+    #横のパリティビット作る
+        side_checkbit_str = '0'
+        ascii_array_str = list(bin(int(ascii_out[i],0))[2:])
+        for j in range(len(ascii_array_str)) :
+            int_bit = int(ascii_array_str[j],16)
+            side_checkbit_str = hex(int(side_checkbit_str,16) ^ int_bit)
+        sp_out += str(side_checkbit_str)[2:4]
+
+
+
+    for i in range(sp_len) : #縦のパリティビット作る
+        ascii_out[i] = int(ascii_out[i],16)
+        vertical_checkbit_str = hex(int(vertical_checkbit_str,16) ^ ascii_out[i])
+    sp_out += str(vertical_checkbit_str)[2:4]
+
+    #縦のパリティの横のパリティ
+    side_checkbit_str = '0'
+    ascii_array_str = list(bin(int(vertical_checkbit_str,0))[2:])
+    for j in range(len(ascii_array_str)) :
+        int_bit = int(ascii_array_str[j],16)
+        side_checkbit_str = hex(int(side_checkbit_str,16) ^ int_bit)
+    sp_out += str(side_checkbit_str)[2:4]
     return sp_out
 
 if __name__ == '__main__':
