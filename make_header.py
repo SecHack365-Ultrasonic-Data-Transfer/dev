@@ -1,3 +1,5 @@
+#coding:utf-8
+
 """
 TCPヘッダ...
 送信元ポートNo.(16bit),宛先ポートNo.(16bit)
@@ -13,7 +15,6 @@ TCPヘッダ...
       make_binary.py                                            　#初回実行(3wayハンドシェイク時の初期値決定)
 """
 
-#coding:utf-8
 import random
 import sys
 
@@ -21,13 +22,16 @@ import sys
 initial_digits = 16
 initial_min = 0
 initial_max = pow(2, initial_digits)-1
+print(initial_max)
 
 # シーケンスNo.の更新/決定
 def make_sequence_number(receive_sequence: int, receive_ack: int) -> int :
     if receive_sequence == -1 :                              #3ウェイハンドシェイク時(?)
+        print(random.randint(initial_min, initial_max))
         return random.randint(initial_min, initial_max)
     else :                                                  #受信ack No. -> 送信シーケンスNo.
-        return int(receive_ack)
+        print(int(receive_ack))
+        return int(receive_ack) % (initial_max+1)
 
 # 確認応答(ack)No.の更新/決定
 def make_ack_number(receive_ack: int, receive_data_length: int, before_ack: int) -> int :
@@ -40,7 +44,7 @@ def make_ack_number(receive_ack: int, receive_data_length: int, before_ack: int)
             send_ack = int(receive_sequence) + int(receive_data_length)
             
             return send_ack % (initial_max+1)
-            
+
 def make_flag_number(flag) -> int :
     flag_number = 0
     for i in flag :
@@ -57,7 +61,7 @@ def make_flag_number(flag) -> int :
         elif i == "FIN" :
             flag_number += 1
     return flag_number
-    
+
 # 前回送信時の確認応答(ack)No.
 before_ack = 0
 send_flag = []
