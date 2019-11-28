@@ -56,18 +56,21 @@ def txt_to_asciicode(input):
     sp_in = list(input)  #input -> 1文字ずつ
     sp_out = ""
     ascii_out = []
+    ascii_0x_out = []
     for i in range(sp_len) :
         ascii_out.append(hex(ord(sp_in[i])))
         #sp_out += str(hex(ord(sp_in[i])))[2:4] #ascii化→16進化→文字列化
     #横のパリティビット作る
         print('正しい',ascii_out[i])
-        sp_out += parity_bit.parity_bit_side(ascii_out[i])
-
+        sp_after_out,sp_0x_out = parity_bit.parity_bit_side(ascii_out[i])
+        sp_out += sp_after_out
+        ascii_0x_out.append(sp_0x_out)
+    print(ascii_0x_out)
     #縦のパリティビット作る
-    sp_out += parity_bit.parity_bit_height(ascii_out,sp_len)
+    sp_after_out,sp_0x_out = parity_bit.parity_bit_height(ascii_0x_out,sp_len)
+    sp_out += sp_after_out
 
-
-    
+    print('ラスト',sp_out)
     return sp_out
 
 if __name__ == '__main__':

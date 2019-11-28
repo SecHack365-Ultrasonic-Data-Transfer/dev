@@ -9,6 +9,7 @@ def parity_check(in_code) :
     return out_code
 
 def parity_checker(in_code) :
+    print('in_code:',in_code)
     out_code = ''
     vertical_parity = '0'
     parity_flg = True
@@ -38,7 +39,7 @@ def parity_checker(in_code) :
         #パリティを外すとこ
         
         print(int(len(in_code)/2))
-        if code != int(len(in_code)/2) :
+        if code != int(len(in_code)/2)-1 :
             if txt >= 128 :
                 txt -= 128
             out_code += chr(txt)
@@ -49,8 +50,10 @@ def parity_checker(in_code) :
 
     #縦にパリティチェック
     vertical_checkbit_str = '0'
+    print('ここ',int(len(in_code)))
+    print(in_code)
     for code in range(int(len(in_code)/2)) : 
-        if code != int(len(in_code)/2) :
+        if code != int(len(in_code)/2)-1 :
             txt = (int(in_code[code*2:(code+1)*2], 16))
             vertical_checkbit_str = hex(int(vertical_checkbit_str,16) ^ txt)
             print(vertical_checkbit_str)
