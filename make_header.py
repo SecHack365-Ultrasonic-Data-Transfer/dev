@@ -11,8 +11,11 @@ TCPヘッダ...
 
 →シーケンスNo./確認応答No.くらいは実装してみよう(桁数はinitial_digitsで変更可能)
 
-実行 : make_binary.py <受信シーケンスNo.> <受信ack No.>　<受信データ長> <送信するフラグ> #更新
-      make_binary.py                                            　#初回実行(3wayハンドシェイク時の初期値決定)
+import make_header
+print(make_header.main("none", "none", "none", "none", "none"))
+とかで実行。
+def main(re_seq, re_ack, re_data_len, se_flag1, se_flag2):の順
+
 """
 
 import random
@@ -62,29 +65,45 @@ def make_flag_number(flag) -> int :
             flag_number += 1
     return flag_number
 
-# 前回送信時の確認応答(ack)No.
-before_ack = 0
-send_flag = []
-# 各種受信情報 : -1 = 未設定
-if len(sys.argv) == 1 :     #初回起動(3wayハンドシェイクの開始)?
-    receive_sequence = -1   #シーケンスNo.
-    receive_ack = -1        #確認応答(ack)No.
-    receive_data_length = 0 #データ長ype() -- 別関数から持ってこよう
-else :                      #2回目以降の通信
-    receive_sequence = int(sys.argv[1])
-    receive_ack = int(sys.argv[2])
-    receive_data_length = int(sys.argv[3])
-    for i in range(4, len(sys.argv)):   #立てるflag
-        send_flag.append(sys.argv[i])
+"""
+def make_checksum(sequence_number, ack_number):
+	check = 0
+	for i in range(0,int(initial_digits/4)):
+		print(sequence_number[i*4:(i+1)*4])
+		check += int(sequence_number[i*4:(i+1)*4], 2)
+	print(check)
+"""
 
-sequence_number = format(make_sequence_number(receive_sequence, 
-                                              receive_ack       ), 'b').zfill(initial_digits)
-ack_number = format(make_ack_number(receive_ack, 
-                                    receive_data_length, 
-                                    before_ack           ), 'b').zfill(initial_digits)
-flag_number = format(make_flag_number(send_flag),'b').zfill(6)
-print(  "seq_num: "    + str(int(sequence_number, 2))   #出力情報
-      + ", ack_num: "  + str(int(ack_number, 2))     
-      + ", flag_num: " + str(send_flag) + " - " + str(int(flag_number, 2)) )
 
-print(sequence_number + ack_number + flag_number)     #純粋に繋ぎ合わせる(出力向け)
+def main(re_seq, re_ack, re_data_len, se_flag1, se_flag2):
+	# 前回送信時の確認応答(ack)No.
+	before_ack = 0
+	send_flag = []
+	# 各種受信情報 : -1 = 未設定
+	if re_seq == "none" :     #初回起動(3wayハンドシェイクの開始)?
+	    receive_sequence = -1   #シーケンスNo.
+	    receive_ack = -1        #確認応答(ack)No.
+	    receive_data_length = 0 #データ長ype() -- 別関数から持ってこよう
+	    send_flag.append("SYN")
+	else :                      #2回目以降の通信,おそらく最初数行はいらないけど保険(というかまた呼び出し方変えそうな予感)
+	    receive_sequence = re_seq
+	    receive_ack = re_ack
+	    receive_data_length = re_data_len
+	    #for i in range(4, len(sys.argv)):   #立てるflag
+	    #    send_flag.append(sys.argv[i])
+	    send_flag.append(se_flag1)
+	    send_flag.append(se_flag2)
+	sequence_number = format(make_sequence_number(receive_sequence, 
+	                                              receive_ack       ), 'b').zfill(initial_digits)
+	ack_number = format(make_ack_number(receive_ack, 
+	                                    receive_data_length, 
+	                                    before_ack           ), 'b').zfill(initial_digits)
+	#make_checksum(sequence_number, ack_number)
+
+
+	flag_number = format(make_flag_number(send_flag),'b').zfill(6)
+	print(  "seq_num: "    + str(int(sequence_number, 2))   #出力情報
+	      + ", ack_num: "  + str(int(ack_number, 2))     
+	      + ", flag_num: " + str(send_flag) + " - " + str(int(flag_number, 2)) )
+	
+	return (sequence_number + ack_number + flag_number)     #純粋に繋ぎ合わせる(出力向け)
