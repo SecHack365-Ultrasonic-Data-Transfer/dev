@@ -7,6 +7,7 @@ from scipy import signal
 
 import math
 
+import parity_check
 freq_std = 440
 length = 0.1
 
@@ -23,6 +24,7 @@ if __name__ == '__main__':
     print(in_sec)
 
     i = 0
+    print(int(in_sec/length))
     while i < int(in_sec/length):
 
         x = []
@@ -58,8 +60,11 @@ if __name__ == '__main__':
         print(i, in_freq, hex(j)[2:4])
 
         i += 1
-    for code in range(int(len(in_code)/2)):
-        in_txt += chr(int(in_code[code*2:(code+1)*2], 16))
+    
+    in_txt,parity_flg = parity_check.parity_checker(in_code)
+    
+    #for code in range(int(len(in_code)/2)):
+    #    in_txt += chr(int(in_code[code*2:(code+1)*2], 16))
     print("input : ", in_code, "→", in_txt)
     #print(in_code[code*2:(code+1)*2], chr(int(in_code[code*2:(code+1)*2], 16)))
         
