@@ -10,9 +10,8 @@ input_device = 0  # 入力デバイス
 output_device = 1  # 出力デバイス
 sampling_rate = 44100  # サンプリングレート マイクの特性に合わせる
 CHUNK = 2 ** 10  # データ長になる
-record_seconds = 1.0  # サンプリングする必要最低限の時間
-freq_limit = 12000  # Hz
-
+record_seconds = 0.1 # サンプリングする必要最低限の時間
+freq_limit = 44100  # Hz
 
 class Plot():  # もうすこしマトモなclassにしたい
     def __init__(self):
@@ -106,14 +105,14 @@ class AudioFilter():
             j = 0
             #サンプリングレートの1/2以上の値を除外
             for i in self.minimum:
-                if i > 20000 or i < 100:
+                if i > 30000 or i < 100:
                     j += 1
                 else:
                     break
             #カットオフ周波数の変更
             self.fe1 = (self.minimum[j]-100)/ (sampling_rate / 2)
             self.fe2 = (self.minimum[j]+100)/ (sampling_rate / 2)
-            print('fe1 and fe2 is',self.minimum[j]-100,self.minimum[j]+100)
+            # print('fe1 and fe2 is',self.minimum[j]-100,self.minimum[j]+100)
 
 
         self.buf = np.frombuffer(in_data, dtype="float32")
@@ -154,7 +153,14 @@ if __name__ == '__main__':
             amplitude = np.array([np.sqrt(c.real ** 2 + c.imag ** 2) for c in x])  # 振幅スペクト
             amplitude_filtered_data = np.array([np.sqrt(c.real ** 2 + c.imag ** 2) for c in fft_filtered_data])
             pt.set(freqList[:int(len(freqList) / 2)], amplitude[:int(len(freqList) / 2)])  # 環境音プロット
-            pt.set2(freqList[:int(len(freqList) / 2)], amplitude_filtered_data[:int(len(freqList) / 2)])  # 加工後音声プロット
+            # pt.set2(freqList[:int(len(freqList) / 2)], amplitude_filtered_data[:int(len(freqList) / 2)])  # 加工後音声プロット
+            # print(np.where(freqList > 12000))
+
+            # freqList[:int(len(freqList) / 2)]
+
+            # print("amplitude ->")
+            # print(amplitude[:int(len(freqList) / 2)])
+            print(amplitude[3000])
 
             # 下限ピーク検出
             af.min_id = signal.argrelmin(amplitude, order=1000)  # small peaks
@@ -166,7 +172,7 @@ if __name__ == '__main__':
 
             # 下限ピークを昇順に並び替え
             af.minimum = af.min_id[0][ary.argsort()]
-            print(af.minimum)
+            # print(af.minimum)
 
     pt.close()
 
