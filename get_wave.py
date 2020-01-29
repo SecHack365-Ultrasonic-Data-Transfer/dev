@@ -4,14 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import fftpack
 from scipy import signal
-
 import math
+def get_wave1():
+    freq_std = 440
+    length = 0.1
 
-freq_std = 440
-length = 0.1
 
-
-if __name__ == '__main__':
+    #if __name__ == '__main__':
     in_file = "hoge.wav"
     
     data, rate = sf.read(in_file)

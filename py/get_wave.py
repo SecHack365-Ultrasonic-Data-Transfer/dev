@@ -11,8 +11,8 @@ import math
 
 freq_std = 440
 
-
-if __name__ == '__main__':
+def get_wave():
+#if __name__ == '__main__':
     #in_file = "hoge.wav"
     
     #data, rate = sf.read(in_file)
@@ -40,6 +40,7 @@ if __name__ == '__main__':
     all = []
     for i in range(0, int(RATE / chunk * RECORD_SECONDS)):
         data = stream.read(chunk)
+        print(chunk)
         all.append(data)
         try:
             print(int(i / 50))
