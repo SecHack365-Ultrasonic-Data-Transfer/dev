@@ -7,8 +7,8 @@ read_header_latest.main(受信データ[0:52?])
 """
 
 ### 拡張時になるべく計算式を変えずに済むように
-code_len = 16                                       # 送信元/先 no.のbit数
-seq_ack_len = 8                                     # seq/ack no.のbit数
+code_len = 8                                       # 送信元/先 no.のbit数
+seq_ack_len = 16                                    # seq/ack no.のbit数
 flag_head = code_len*2 + seq_ack_len*2              # flagまでのbit数(書くと読みにくいから変数化)
 flag_len = 4                                        # flagのbit数
 bef_par_len = code_len*2 + seq_ack_len*2+flag_len   # パリティまでのbit数(書くと読みにくいから変数化)
@@ -82,3 +82,4 @@ def main(recv_bin):
     
     print("recv_code, sender_code, recv_seq, recv_ack, recv_flag, recv_par，calc_par, match?")
     print(recver_code, sender_code, recv_seq, recv_ack, recv_flag, recv_par, calc_par, check_par)
+    return recver_code, sender_code, recv_seq, recv_ack, recv_flag, recv_par, calc_par, check_par
