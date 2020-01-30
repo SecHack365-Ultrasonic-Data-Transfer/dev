@@ -16,7 +16,7 @@ def parity_checker(in_code) :
     vertical_parity = '0'
     parity_flg = True
     
-    read_header_latest.main(in_code[0:16])
+    read_header_latest.main(in_code[0:16])  ### returnはちょっと忘れてもらっておきます(正しい値が取れたら、ヘッダの管理もする?)
     
     for code in range(16, int(len(in_code-16)/2)):
         txt = (int(in_code[code*2:(code+1)*2], 16))
