@@ -226,3 +226,4 @@ if __name__ == '__main__':
     scheduler = sched.scheduler(time.time, time.sleep)
     scheduler.enter(diff.seconds, 1, send,(out_txt,) )
     scheduler.run()
+    

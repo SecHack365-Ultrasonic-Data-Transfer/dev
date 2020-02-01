@@ -8,7 +8,8 @@ import pyaudio
 import wave
 
 import math
-import parity_check
+import parity_check 
+import beep
 
 freq_std = 440
 
@@ -27,7 +28,7 @@ def get_wave():
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
-    RECORD_SECONDS = 3
+    RECORD_SECONDS = 8
     WAVE_OUTPUT_FILENAME = "sample.wav"
 
     p = pyaudio.PyAudio()
@@ -46,8 +47,8 @@ def get_wave():
         try:
             print(int(i / 50))
             pass
-        except ZeroDivisionError as identifier:
-            pass
+        except :
+            print('error')
 
     stream.close()
     p.terminate()
@@ -66,8 +67,6 @@ def get_wave():
     in_sec = len(data) / RATE
     for i in range(int(in_sec)):
         X = fftpack.fft(data[i*44100:(i+1)*44100])
-        freqList = fftpack.fftfreq(44100, d=1.0/ RATE)
-        
         amplitude = [np.sqrt(c.real ** 2 + c.imag ** 2) for c in X]
         in_freq = amplitude.index(max(amplitude))  #1番大きい振幅を拾ってるだけ(雑音出たら、たぶん上手くいかない)
         
@@ -78,16 +77,10 @@ def get_wave():
                 in_code += hex(j)[2:4]
                 break
         print(i, in_freq, j)
-
-        #描画周り
-        #plt.plot(freqList, amplitude, marker=".", linestyle="-", label = "fft plot")
-        #plt.axis([0, 2000, 0, 7000])
-        #plt.xlabel("frequency [Hz]")
-        #plt.ylabel("amplitude")
-        
-        plt.show()
     in_txt,parity_flg = parity_check.parity_checker(in_code)
-    #for code in range(int(in_sec/2)):
-    #    in_txt += chr(int(in_code[code*2:(code+1)*2], 16))
+    if(parity_flg == True):
+        print('OK')
+        #受信音鳴る
+        beep.beep(2000,2000)
+
     print("input : ", in_code, "→", in_txt)
-    #print(in_code[code*2:(code+1)*2], chr(int(in_code[code*2:(code+1)*2], 16)))
